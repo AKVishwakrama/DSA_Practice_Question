@@ -1,0 +1,43 @@
+# link https://leetcode.com/problems/maximize-area-of-square-hole-in-grid/
+
+#Ex 1 : 
+#n = 2, m = 1
+#hBars = [2, 3]
+#vBars = [2]
+
+
+
+import java.util.Arrays;
+
+class Solution {
+
+    private int maxSpan(int[] bars) {
+        if (bars.length == 0) return 1;
+
+        int maxStreak = 1;
+        int currStreak = 1;
+
+        for (int i = 1; i < bars.length; i++) {
+            if (bars[i] == bars[i - 1] + 1) {
+                currStreak++;
+            } else {
+                currStreak = 1;
+            }
+            maxStreak = Math.max(maxStreak, currStreak);
+        }
+
+        // k consecutive removed bars create (k + 1) cells
+        return maxStreak + 1;
+    }
+
+    public int maximizeSquareHoleArea(int n, int m, int[] hBars, int[] vBars) {
+        Arrays.sort(hBars);
+        Arrays.sort(vBars);
+
+        int maxH = maxSpan(hBars);
+        int maxV = maxSpan(vBars);
+
+        int side = Math.min(maxH, maxV);
+        return side * side;
+    }
+}
