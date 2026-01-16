@@ -1,0 +1,133 @@
+https://leetcode.com/problems/maximum-square-area-by-removing-fences-from-a-field/description/?envType=daily-question&envId=2026-01-16
+
+Example 1:
+
+Input: m = 4, n = 3, hFences = [2,3], vFences = [2]
+Output: 4
+Explanation: Removing the horizontal fence at 2 and the vertical fence at 2 will give a square field of area 4.
+
+
+Solution 
+
+Intuition
+A square is a special rectangle where:
+
+the height and width are exactly the same
+In this problem, fences divide the field into smaller sections.
+When we remove fences, multiple sections merge together, creating larger continuous segments.
+
+That means:
+
+the distance between any two horizontal fences can act as a possible height
+the distance between any two vertical fences can act as a possible width
+So the key realization is:
+
+💡 If the same distance appears in both horizontal and vertical directions, we can form a square using that value as the side length.
+
+Among all such possibilities, we want the largest side length, because that gives the maximum square area.
+
+Interview Relevance
+This problem evaluates several important interview concepts:
+
+Translating a real-world geometry problem into distances and sets
+Understanding how removing constraints (fences) creates new possibilities
+Efficient comparison using a HashSet instead of nested checks
+Correctly handling edge boundaries, which is a common source of bugs
+This problem does not have official company tags on LeetCode.
+It is a contest problem, so it’s unlikely to be directly asked in interviews as-is.
+Some unofficial sources mention Swiggy OA, but this is not verified.
+More realistically, companies may ask similar fence / partition / geometry problems, not this exact one.
+Best treated as a good practice problem, not a confirmed interview favorite.
+You’ll see similar interview questions framed as:
+
+“Remove partitions / cuts / dividers to form the largest possible shape”
+
+Approach
+Step 1: Include field boundaries
+The edges of the field behave like fences too.
+
+Add 1 and m to the horizontal fence list
+Add 1 and n to the vertical fence list
+This ensures we also consider squares that touch the outer boundary of the field, not just internal ones.
+
+Step 2: Sort the fence positions
+Sorting allows us to:
+
+Compare fence positions in order
+Correctly compute distances between any two fences
+Without sorting, distance calculations could be incorrect or inconsistent.
+
+Step 3: Collect all possible heights
+For every pair of horizontal fences:
+
+Compute the distance between them
+Store that distance in a HashSet
+This gives us all possible heights that can be formed after removing some horizontal fences.
+
+Step 4: Match widths with heights
+For every pair of vertical fences:
+
+Calculate the width between them
+Check whether this width already exists in the horizontal distance set
+If it exists, that distance can act as both height and width, forming a valid square.
+
+While doing this, we continuously track the largest valid side length.
+
+Step 5: Compute the area
+Square area = side × side
+Apply modulo 10⁹ + 7 as required
+If no matching distance is found, it means forming a square is impossible, so we return -1.
+
+
+Code :
+
+class Solution {
+    public int maximizeSquareArea(int m, int n, int[] hFences, int[] vFences) {
+
+        // Add the outer boundaries of the field to the horizontal fence positions
+        // This allows us to consider squares that touch the top or bottom edge
+        int[] h = Arrays.copyOf(hFences, hFences.length + 2);
+        h[hFences.length] = 1;
+        h[hFences.length + 1] = m;
+
+
+        // Add the outer boundaries of the field to the vertical fence positions
+        // This allows us to consider squares that touch the left or right edge
+        int[] v = Arrays.copyOf(vFences, vFences.length + 2);
+        v[vFences.length] = 1;
+        v[vFences.length + 1] = n;
+        
+
+        // Sort both fence arrays so distances can be calculated correctly
+        Arrays.sort(h);
+        Arrays.sort(v);
+
+        // Compute every possible height that can be formed by removing horizontal fences
+        // Each pair of horizontal fences defines one potential side length
+        Set<Integer> hGaps = new HashSet<>();
+        for (int i = 0; i < h.length; i++) {
+            for (int j = i + 1; j < h.length; j++) {
+                hGaps.add(h[j] - h[i]);
+            }
+        }
+
+        // For each possible vertical distance, check whether the same length
+        // exists in the horizontal direction to form a valid square
+        long maxSide = -1;
+        for (int i = 0; i < v.length; i++) {
+            for (int j = i + 1; j < v.length; j++) {
+                int currentGap = v[j] - v[i];
+                if (hGaps.contains(currentGap)) {
+                    maxSide = Math.max(maxSide, currentGap);
+                }
+            }
+        }
+
+        // If no common side length was found, forming a square is impossible
+        if (maxSide == -1) return -1;
+
+        // Return the area of the largest square under the modulo constraint
+        long MOD = 1_000_000_007;
+        return (int) ((maxSide * maxSide) % MOD);
+    }
+}
