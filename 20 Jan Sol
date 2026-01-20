@@ -1,0 +1,50 @@
+##  Construct the Minimum Bitwise Array I
+
+You are given an array nums consisting of n prime integers.
+You need to construct an array ans of length n, such that, for each index i, the bitwise OR of ans[i] and ans[i] + 1 is equal to nums[i], i.e. ans[i] OR (ans[i] + 1) == nums[i].
+Additionally, you must minimize each value of ans[i] in the resulting array.
+If it is not possible to find such a value for ans[i] that satisfies the condition, then set ans[i] = -1.
+
+
+Intuition :
+
+ans[i] OR (ans[i] + 1) == nums[i]
+ans[i] and ans[i] + 1 are one odd and one even.
+nums[i] is an odd.
+From Constraints
+Here 2 is the only even number in nums[i]
+
+Approach :
+
+1101 || (1101 + 1) = 1111
+The change is the rightmost 0 to 1.
+For each n in array nums,
+find the rightmost 0,
+and set the next bit from 1 to 0.
+n + 1 will filp the suffix -> 1 to suffix -> 0,
+and flip the rightmost 0 to 1.
+n & -n is the trick to get the rightmost 1.
+
+Time complexity:
+O(n)
+
+Space complexity:
+O(n)
+
+Code : 
+
+class Solution {
+    public int[] minBitwiseArray(List<Integer> nums) {
+
+        int[] ans = new int[nums.size()];
+
+        for(int i = 0; i< nums.size(); i++){
+            int n = nums.get(i);
+            if(n !=2 ) ans[i] = n- ((n+1) & (-n-1)) / 2;
+            // Minimum value satisfying the condition
+            else ans[i] = -1;
+        }
+        return ans;
+        
+    }
+}
