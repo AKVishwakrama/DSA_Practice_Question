@@ -1,0 +1,70 @@
+Problem Statement Given a string str, find the largest number of unique characters that exist between a pair of matching letters anywhere in the string. If no pairs exist, return 0.
+
+Intuition & Logic1. Track character positions: Store the first and last occurrence of each character in the string.
+2. Identify pairs: For each character, if it appears more than once, it forms a pair.
+3. Analyze substrings between pairs: For every pair of matching characters, extract the substring between them (excluding the pair itself).
+4. Count unique characters: Calculate the number of unique characters in each substring.
+5. Maximize the count: Return the maximum unique count among all pairs.
+
+
+Example 1 :
+Input : "ahyjakh"
+1. Pairs found: a (0,6) and h (1,7).
+2. Between a (0,6): substring is "hyjak". Unique chars = {h,y,j,a,k} → 4.
+3. Between h (1,7): substring is "yjak". Unique chars = {y,j,a,k} → 4.
+4. Max unique = 4.
+Output : 4
+
+
+Soluton Code :
+
+import java.util.*;
+class Main {
+    public static String StringChallenge(String str) {
+        // Step 1: Store first and last occurrence of each character
+        Map<Character, int[]> charIndex = new HashMap<>();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.char(i);
+            if (!charIndex.containsKey(c)) {
+                charIndex.put(c, new int[]{i, i}); // first & last index
+            } else {
+                charIndex.get(c)[1] = i; // update last index
+            }
+        }
+
+        // Step 2: Find max unique characters between pairs
+        int maxUnique = 0;
+        for (Map.Entry<Character, int[]> entry : charIndex.entrySet()) {
+            int[] indices = entry.getValue();
+            int first = indices[0], last = indices[1];
+            if (last > first) { // valid pair
+                // Extract substring between the pair (exclusive)
+                String sub = str.substring(first + 1, last);
+                // Count unique characters in substring
+                Set<Character> uniqueChars = new HashSet<>();
+                for (char ch : sub.toCharArray()) {
+                    uniqueChars.add(ch);
+                }
+                maxUnique = Math.max(maxUnique, uniqueChars.size());
+            }
+        }
+
+        // Step 3: Return result as string
+        return Integer.toString(maxUnique);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(StringChallenge("ahyjakh"));   // Output: 4
+        System.out.println(StringChallenge("ghececgkaem")); // Output: 5
+        System.out.println(StringChallenge("mmerme"));     // Output: 3
+        System.out.println(StringChallenge("abcdefghi"));  // Output: 0
+    }
+}
+
+
+
+Explanation of Code1. Character Index Mapping: A HashMap stores each character with its first and last indices in the string.
+2. Pair Detection: For characters appearing twice (first ≠ last), the substring between them is analyzed.
+3. Unique Count: A HashSet automatically removes duplicates, giving the unique character count.
+4. Maximization: The maximum unique count is updated for every valid pair.
+
