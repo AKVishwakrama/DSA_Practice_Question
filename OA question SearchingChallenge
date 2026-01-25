@@ -1,0 +1,70 @@
+Searching Challenge
+
+Have the function SearchingChallenge (strArr) take the array of strings stored in strarr, which will be a 2D matrix of 0 and 1's, and determine how many holes, or contiguous regions of O's, exist in the matrix. A contiguous region is one where there is a connected group of 0's going in one or more of four directions: up, down, left, or right. For example: if strarr is ["10111", "10101", "11101", "11111"], then this looks like the following matrix:
+
+1 0 1 1 1
+1 0 1 0 1
+1 1 1 0 1
+1 1 1 1 1
+
+For the input above, your program should return 2 because there are two separate contiguous regions of 0's, which create "holes" in the matrix. You can assume the input will not be empty.
+Examples
+Input: new String[] {"01111", "01101", "00011", "11110"}
+Output: 3
+
+Solution Code :
+
+import java.util.*;
+class Main {
+    public static String SearchingChallenge(String[] strArr) {
+        int rows = strArr.length;
+        int cols = strArr[0].length();
+        int[][] matrix = new int[rows][cols];
+        
+        // Step 1: Convert input string array to a binary matrix
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                matrix[i][j] = strArr[i].charAt(j) - '0';
+            }
+        }
+        
+        int holeCount = 0;
+        boolean[][] visited = new boolean[rows][cols];
+        
+        // Step 2: Traverse the matrix to find contiguous 0 regions ("holes")
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (matrix[i][j] == 0 && !visited[i][j]) {
+                    dfs(matrix, visited, i, j);
+                    holeCount++;
+                }
+            }
+        }
+        
+        // Return the number of holes as a String
+        return String.valueOf(holeCount);
+    }
+    
+    // Depth-First Search (DFS) to mark a contiguous 0 region
+    private static void dfs(int[][] matrix, boolean[][] visited, int i, int j) {
+        int[] dx = {-1, 1, 0, 0};  // Up, Down, Left, Right
+        int[] dy = {0, 0, -1, 1};
+        visited[i][j] = true;
+        
+        for (int k = 0; k < 4; k++) {
+            int ni = i + dx[k], nj = j + dy[k];
+            if (ni >= 0 && ni < matrix.length && nj >= 0 && nj < matrix[0].length
+                && matrix[ni][nj] == 0 && !visited[ni][nj]) {
+                dfs(matrix, visited, ni, nj);
+            }
+        }
+    }
+    
+    public static void main(String[] args) {
+        String[] input1 = {"10111", "10101", "11101", "11111"};
+        System.out.println(SearchingChallenge(input1));  // Output: "2"
+        
+        String[] input2 = {"01111", "01101", "00011", "11110"};
+        System.out.println(SearchingChallenge(input2));  // Output: "3"
+    }
+}
