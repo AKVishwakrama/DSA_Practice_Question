@@ -5,3 +5,106 @@ alsi solve 4-5 problem based on that related to List, Linkedlist, "Cycle Detecti
 ### Cycle Detection
 ### Middle of the Linked List
 ### Search in Linked List
+
+
+Today i solved and understand Monotonic stack Basics Problem  1st FEBUARY 2026
+
+## Next Greater Element I
+## Next Greater Element II 
+
+APPROACH is 
+
+
+
+WHAT IS A MONOTONIC STACK?
+
+A stack that always maintains a sorted order
+There are only 2 types:
+
+📈 Monotonic Increasing Stack
+
+Elements go from small → big
+Example stack:
+1, 3, 5, 8
+
+📉 Monotonic Decreasing Stack
+
+Elements go from big → small
+Example stack:
+10, 7, 4, 2
+
+
+👉 While inserting new element, we pop elements that break the order
+❗ WHY DO WE EVEN NEED IT?
+Because many problems ask:
+For each element, find nearest element on left/right which is:
+
+greater
+smaller
+
+Example patterns:
+
+• Next Greater Element
+• Previous Smaller Element
+• Stock Span
+• Histogram
+• Daily Temperatures
+
+🧠 Naive way:
+
+For each element → scan left/right check condition every time 
+⏱ O(n²) (slow)
+
+⚡ Monotonic Stack way:
+
+Each element pushed & popped once
+⏱ O(n)
+
+🔥 Huge optimization
+🎯 EXACT USE (Core Idea)
+Monotonic stack helps you quickly answer:
+“Who is the next bigger/smaller element for me?”
+without checking everything.
+
+📌 SIMPLE EXAMPLE
+
+Array:
+[4, 5, 2, 10]
+
+
+We want Next Greater.
+Brute thinking:
+
+For 4 → check 5
+For 5 → check 2,10
+For 2 → check 10
+
+Too much work 
+
+Stack thinking:
+Go from right:
+Stack keeps useful future elements only.
+
+Process:
+
+Start:
+
+➡ 10 → stack = [10]
+
+➡ 2 → next greater is 10
+stack = [10,2]
+
+➡ 5 → pop 2 (smaller)
+next greater is 10
+stack = [10,5]
+
+➡ 4 → next greater is 5
+
+END
+
+*********************************************************************
+
+
+
+
+
