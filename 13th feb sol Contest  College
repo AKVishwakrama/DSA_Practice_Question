@@ -1,0 +1,40 @@
+### Strange Count [Hacker Rank ]
+
+
+import java.util.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+class Result {
+
+    public static long strangeCounter(long t) {
+     long cycleStartTime = 1;
+     long initialValue = 3;
+     
+     while(t >= cycleStartTime + initialValue){
+        cycleStartTime += initialValue;
+        initialValue *= 2;
+     }
+     //calculate the counter val at time
+     return initialValue - (t - cycleStartTime);
+
+    }
+
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        long t = Long.parseLong(bufferedReader.readLine().trim());
+
+        long result = Result.strangeCounter(t);
+
+        bufferedWriter.write(String.valueOf(result));
+        bufferedWriter.newLine();
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
