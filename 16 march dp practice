@@ -1,0 +1,53 @@
+###### partition a set into two subsets such that the difference of subset sums is minimum, using Tabulation #####
+
+// Function to get the minimum difference using tabulation
+function minDifference(arr) {
+    let sumTotal = 0;
+
+    // Calculate total sum of the array
+    for (let num of arr) {
+        sumTotal += num;
+    }
+
+    let n = arr.length;
+
+    // Create a DP table where dp[i][j] represents 
+    // if a subset sum 'j' is achievable using 
+    // the first 'i' elements
+    let dp = Array(n + 1).fill(null).map(() => Array(sumTotal + 1).fill(false));
+
+    // A sum of 0 is always achievable (empty subset)
+    dp[0][0] = true;
+
+    // Fill the DP table
+    for (let i = 1; i <= n; i++) {
+        for (let sum = 0; sum <= sumTotal; sum++) {
+        
+            // Exclude the current element
+            dp[i][sum] = dp[i - 1][sum];
+
+            // Include the current element if sum >= arr[i - 1]
+            if (sum >= arr[i - 1]) {
+                dp[i][sum] = dp[i][sum] 
+                        || dp[i - 1][sum - arr[i - 1]];
+            }
+        }
+    }
+
+    // Find the minimum difference
+    let minDiff = Number.MAX_VALUE;
+
+    // Iterate over all possible subset sums and 
+    // find the minimum difference
+    for (let sum = 0; sum <= sumTotal / 2; sum++) {
+        if (dp[n][sum]) {
+            minDiff = Math.min(minDiff, 
+                   Math.abs((sumTotal - sum) - sum));
+        }
+    }
+
+    return minDiff;
+}
+
+let arr = [1, 6, 11, 5];
+console.log(minDifference(arr));
