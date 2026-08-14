@@ -1,0 +1,93 @@
+***** Maximum Length Substring With Two Occurrences *********
+
+Given a string s, return the maximum length of a substring such that it contains at most two occurrences of each character.
+ 
+
+Example 1:
+Input: s = "bcbbbcba"
+Output: 4
+Explanation:
+The following substring has a length of 4 and contains at most two occurrences of each character: "bcbbbcba".
+
+Example 2:
+Input: s = "aaaa"
+Output: 2
+Explanation:
+The following substring has a length of 2 and contains at most two occurrences of each character: "aaaa".
+ 
+
+Constraints: 
+
+2 <= s.length <= 100  ---> sliding window
+s consists only of lowercase English letters.
+
+## Appraoch 1st using HashMap + sliding window
+
+class Solution {
+    public int maximumLengthSubstring(String s) {
+      Map<Character, Integer> cnt = new HashMap<>();
+      int res = 0;
+      int i = 0;
+
+        for(int j = 0; j < s.length(); j++){
+           char c = s.charAt(j);
+           cnt.put(c, cnt.getOrDefault(c,0)+1);
+           
+           while(cnt.get(c) > 2){
+             char left = s.charAt(i);
+             cnt.put(left, cnt.get(left)-1);
+             i++;
+           }
+
+           res = Math.max(res, j-i+1);
+        }
+        return res;
+    }
+}
+
+// Appraoch 2 optimized version SPACE optimized 
+
+class Solution {
+    public int maximumLengthSubstring(String s) {
+        int res = 0;
+        int[] fq = new int[26];
+
+        for (int l = 0, r = 0; r < s.length(); r++) {
+            fq[(s.charAt(r) & 31) - 1]++;
+
+            while (fq[(s.charAt(r) & 31) - 1] > 2)
+                fq[(s.charAt(l++) & 31) - 1]--;
+
+            res = Math.max(res, r - l + 1);
+        }
+
+        return res;
+    }
+}
+
+
+/// Appraoch 3    bit manupulation
+
+class Solution {
+    public int maximumLengthSubstring(String s) {
+        int res = 0, l = 0;
+        long mask = 0;
+        
+        for (int r = 0; r < s.length(); r++) {
+            int k = (s.charAt(r) & 31) << 1;
+            mask += 1L << k;
+            
+            while (((mask >> k) & 3) == 3)
+                mask -= 1L << ((s.charAt(l++) & 31) << 1);
+                
+            res = Math.max(res, r - l + 1);
+        }
+        
+        return res;
+    }
+}
+
+
+
+
+
